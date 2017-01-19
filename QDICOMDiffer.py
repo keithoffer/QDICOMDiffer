@@ -229,6 +229,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     reset_tree_diff_state(self.modelArray[0].invisibleRootItem())
                 else:
                     reset_tree_diff_state(self.modelArray[1].invisibleRootItem())
+                self.diff_result = None
+                self.html_diff_result = None
         except dicom.errors.InvalidDicomError:
             msgBox = QMessageBox()
             msgBox.setWindowTitle("Error")
