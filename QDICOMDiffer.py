@@ -93,6 +93,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.load_file(line, number)
             # Only ever handle two files
             if number == 1:
+                self.ui.splitter.setSizes([50, 50])
                 break
 
         self.show()
