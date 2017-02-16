@@ -19,7 +19,7 @@
 import dicom
 # PyQt is GPL v3 licenced
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor, QPainter, QFontMetrics
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QAbstractItemView, QProgressBar, QLabel, QTreeView, QScrollBar, \
     QPushButton
 from PyQt5.QtCore import QSettings, Qt, QSortFilterProxyModel, QThread, pyqtSignal
@@ -244,6 +244,22 @@ class MainWindow(QtWidgets.QMainWindow):
             self.html_diff_result = self.diffProgressWindow.get_html_diff_result()
             self.diff_result = self.diffProgressWindow.get_diff_result()
 
+# Class taken from stackoverflow user Eric Hulser, url: http://stackoverflow.com/a/11764662
+class EnhancedQLabel(QLabel):
+    def __init__(self, parent=None):
+        super(EnhancedQLabel, self).__init__(parent)
+
+    def setText(self, text):
+        self.setToolTip(text)
+        super(EnhancedQLabel, self).setText(text)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+
+        metrics = QFontMetrics(self.font())
+        elided = metrics.elidedText(self.text(), Qt.ElideMiddle, self.width())
+
+        painter.drawText(self.rect(), self.alignment(), elided)
 
 class DiffProgressWindow(QtWidgets.QDialog):
     def __init__(self, dc_array, model_array, parent=None):

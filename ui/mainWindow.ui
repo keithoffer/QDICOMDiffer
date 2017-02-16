@@ -61,7 +61,19 @@
       <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QLabel" name="labelPath">
+         <widget class="EnhancedQLabel" name="labelPath">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -69,6 +81,12 @@
         </item>
         <item>
          <widget class="DroppableTreeView" name="treeView">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="acceptDrops">
            <bool>true</bool>
           </property>
@@ -79,7 +97,19 @@
       <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QLabel" name="labelPath_2">
+         <widget class="EnhancedQLabel" name="labelPath_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -87,6 +117,12 @@
         </item>
         <item>
          <widget class="DroppableTreeView" name="treeView_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="acceptDrops">
            <bool>true</bool>
           </property>
@@ -104,12 +140,12 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>Fi&amp;le</string>
     </property>
     <addaction name="actionOpen"/>
     <addaction name="actionDiff"/>
@@ -136,27 +172,27 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen">
    <property name="text">
-    <string>Open</string>
+    <string>&amp;Open</string>
    </property>
   </action>
   <action name="actionDiff">
    <property name="text">
-    <string>Diff</string>
+    <string>&amp;Diff</string>
    </property>
   </action>
   <action name="actionExpand_all">
    <property name="text">
-    <string>Expand all</string>
+    <string>&amp;Expand all</string>
    </property>
   </action>
   <action name="actionCollapse_all">
    <property name="text">
-    <string>Collapse all</string>
+    <string>&amp;Collapse all</string>
    </property>
   </action>
   <action name="actionText_diff">
    <property name="text">
-    <string>Text diff</string>
+    <string>&amp;Text diff</string>
    </property>
    <property name="toolTip">
     <string>Text diff</string>
@@ -164,12 +200,12 @@
   </action>
   <action name="actionHTML_diff">
    <property name="text">
-    <string>HTML diff</string>
+    <string>&amp;HTML diff</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>&amp;About</string>
    </property>
   </action>
  </widget>
@@ -178,6 +214,11 @@
    <class>DroppableTreeView</class>
    <extends>QTreeView</extends>
    <header>QDICOMDiffer</header>
+  </customwidget>
+  <customwidget>
+   <class>EnhancedQLabel</class>
+   <extends>QLabel</extends>
+   <header location="global">QDICOMDiffer</header>
   </customwidget>
  </customwidgets>
  <resources/>
