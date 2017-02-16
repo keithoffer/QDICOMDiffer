@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
     QDICOMDiffer - a small program to view and diff the metadata of DICOM images
     Copyright 2017 Keith Offer
