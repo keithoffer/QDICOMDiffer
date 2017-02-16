@@ -35,7 +35,7 @@ from ui.mainWindow import Ui_MainWindow
 indirect_match_colour = QColor(179, 206, 236)
 direct_match_colour = QColor(140, 183, 225)
 GLOBAL_integer_key = 0  # key used to insure all nodes have unique id's
-version = 1.0
+version = '1.0.1'
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, ):
@@ -47,7 +47,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.treeViewArray = [self.ui.treeView, self.ui.treeView_2]
         self.pathLabelArray = [self.ui.labelPath, self.ui.labelPath_2]
 
-        self.setWindowTitle('QDICOMDiffer ' + str(version))
+        self.setWindowTitle('QDICOMDiffer ' + version)
 
         for i in range(2):
             self.modelArray[i].setHorizontalHeaderLabels(['Tag', 'Description', 'Value', 'Different', 'Index'])
@@ -103,7 +103,7 @@ class MainWindow(QtWidgets.QMainWindow):
         msgBox = QMessageBox()
         msgBox.setWindowTitle("About")
         msgBox.setTextFormat(Qt.RichText)
-        msgBox.setText("QDICOMDiffer version " + str(version) +
+        msgBox.setText("QDICOMDiffer version " + version +
                        "<br> Written by Keith Offer" +
                        "<br> Relies heavily on the <a href='http://www.pydicom.org/'>pydicom</a> library")
         msgBox.setIcon(QMessageBox.Information)
