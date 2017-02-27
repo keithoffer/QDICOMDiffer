@@ -535,7 +535,8 @@ class RecursiveProxyModel(QSortFilterProxyModel):
             value = model.item(row_num, 2).text()
             different = model.item(row_num, 3).text()
 
-        accepted = self._tag_filter in tag and self._desc_filter in desc and self._value_filter in value
+        accepted = self._tag_filter.lower() in tag.lower() and self._desc_filter.lower() in desc.lower() \
+                   and self._value_filter.lower() in value.lower()
         if self._show_only_different:
             accepted = accepted and ( different == '1' or different == '2')
 
