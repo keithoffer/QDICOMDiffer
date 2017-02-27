@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.7.1
+# Created by: PyQt5 UI code generator 5.8
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -117,8 +117,11 @@ class Ui_MainWindow(object):
         self.actionHTML_diff.setObjectName("actionHTML_diff")
         self.actionAbout = QtWidgets.QAction(MainWindow)
         self.actionAbout.setObjectName("actionAbout")
+        self.actionAppearance = QtWidgets.QAction(MainWindow)
+        self.actionAppearance.setObjectName("actionAppearance")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionDiff)
+        self.menuView.addAction(self.actionAppearance)
         self.menuView.addAction(self.actionExpand_all)
         self.menuView.addAction(self.actionCollapse_all)
         self.menuView.addAction(self.actionText_diff)
@@ -148,5 +151,6 @@ class Ui_MainWindow(object):
         self.actionText_diff.setToolTip(_translate("MainWindow", "Text diff"))
         self.actionHTML_diff.setText(_translate("MainWindow", "&HTML diff"))
         self.actionAbout.setText(_translate("MainWindow", "&About"))
+        self.actionAppearance.setText(_translate("MainWindow", "&Appearance"))
 
 from QDICOMDiffer import DroppableTreeView, EnhancedQLabel

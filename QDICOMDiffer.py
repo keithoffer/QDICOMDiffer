@@ -22,7 +22,7 @@ import dicom
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor, QPainter, QFontMetrics
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QAbstractItemView, QProgressBar, QLabel, QTreeView, QScrollBar, \
-    QPushButton
+    QPushButton, QColorDialog, QFontDialog
 from PyQt5.QtCore import QSettings, Qt, QSortFilterProxyModel, QThread, pyqtSignal
 # Python standard library is PSF licenced
 import sys
@@ -31,9 +31,10 @@ import re
 import os
 # Other files from this project
 from ui.mainWindow import Ui_MainWindow
+from ui.appearance import Ui_DialogAppearance
 
-indirect_match_colour = QColor(179, 206, 236)
-direct_match_colour = QColor(140, 183, 225)
+default_indirect_match_colour = QColor(179, 206, 236)
+default_direct_match_colour = QColor(140, 183, 225)
 GLOBAL_integer_key = 0  # key used to insure all nodes have unique id's
 version = '1.0.1'
 
@@ -48,6 +49,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.pathLabelArray = [self.ui.labelPath, self.ui.labelPath_2]
 
         self.setWindowTitle('QDICOMDiffer ' + version)
+
+        # Read the settings from the settings.ini file
+        system_location = os.path.dirname(os.path.abspath(sys.argv[0]))
+        QSettings.setPath(QSettings.IniFormat, QSettings.SystemScope, system_location)
+        self.settings = QSettings("settings.ini", QSettings.IniFormat)
+        if os.path.exists(system_location + "/settings.ini"):
+            print("Loading settings from " + system_location + "/settings.ini")
+
+        col = self.settings.value('Appearance/directMatchColour')
+        if col is None:
+            direct_match_colour = default_direct_match_colour
+        else:
+            direct_match_colour = QColor(col)
+
+        col = self.settings.value('Appearance/indirectMatchColour')
+        if col is None:
+            indirect_match_colour = default_indirect_match_colour
+        else:
+            indirect_match_colour = QColor(col)
+
+        font = self.settings.value('Appearance/new_font')
 
         for i in range(2):
             self.modelArray[i].setHorizontalHeaderLabels(['Tag', 'Description', 'Value', 'Different', 'Index'])
@@ -64,6 +86,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 lambda state, i=i: self.filterProxyArray[i].set_show_only_different(bool(
                     state)))
             self.treeViewArray[i].file_dropped.connect(lambda filepath, i=i: self.load_file(filepath, i))
+            self.treeViewArray[i].indirect_match_colour = indirect_match_colour
+            self.treeViewArray[i].direct_match_colour = direct_match_colour
+            if font is not None:
+                self.treeViewArray[i].setFont(font)
 
         self.ui.splitter.setSizes([100, 0])
 
@@ -71,8 +97,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.actionDiff.triggered.connect(self.do_diff)
         self.ui.actionHTML_diff.triggered.connect(self.open_html_diff_window)
         self.ui.actionAbout.triggered.connect(self.open_about_window)
+        self.ui.actionAppearance.triggered.connect(self.open_appearance_window)
         self.raw_diff_window = None
         self.html_diff_window = None
+        self.appearance_window = None
         self.ui.actionText_diff.triggered.connect(self.open_text_diff_window)
         self.ui.actionExpand_all.triggered.connect(self.expand_all)
         self.ui.actionCollapse_all.triggered.connect(self.collapse_all)
@@ -80,13 +108,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.diff_result = None
         self.html_diff_result = None
-
-        # Read the settings from the settings.ini file
-        system_location = os.path.dirname(os.path.abspath(sys.argv[0]))
-        QSettings.setPath(QSettings.IniFormat, QSettings.SystemScope, system_location)
-        self.settings = QSettings("settings.ini", QSettings.IniFormat)
-        if os.path.exists(system_location + "/settings.ini"):
-            print("Loading from " + system_location + "/settings.ini")
 
         # If we were given command line arguments, try and load them
         arguments = sys.argv[1:]
@@ -108,6 +129,18 @@ class MainWindow(QtWidgets.QMainWindow):
                        "<br> Relies heavily on the <a href='http://www.pydicom.org/'>pydicom</a> library")
         msgBox.setIcon(QMessageBox.Information)
         msgBox.exec()
+
+    def open_appearance_window(self):
+        self.appearance_window = AppearanceWindow(self.settings, parent=self)
+        if self.appearance_window.exec():
+            self.settings.setValue('Appearance/new_font', self.appearance_window.new_font)
+            self.settings.setValue('Appearance/directMatchColour',self.appearance_window.direct_match_colour.name())
+            self.settings.setValue('Appearance/indirectMatchColour', self.appearance_window.indirect_match_colour.name())
+            for i in range(2):
+                self.treeViewArray[i].direct_match_colour = self.appearance_window.direct_match_colour
+                self.treeViewArray[i].indirect_match_colour = self.appearance_window.indirect_match_colour
+                self.treeViewArray[i].setFont(self.appearance_window.new_font)
+                self.treeViewArray[i].repaint()
 
     def open_text_diff_window(self):
         if self.diff_result is not None:
@@ -262,6 +295,67 @@ class EnhancedQLabel(QLabel):
         elided = metrics.elidedText(self.text(), Qt.ElideMiddle, self.width())
 
         painter.drawText(self.rect(), self.alignment(), elided)
+
+
+class AppearanceWindow(QtWidgets.QDialog):
+    def __init__(self, settings, parent=None):
+        super(AppearanceWindow, self).__init__(parent)
+        self.ui = Ui_DialogAppearance()
+        self.ui.setupUi(self)
+        self.settings = settings
+        self.ui.pushButtonChangeDirectColour.clicked.connect(self.choose_new_direct_colour)
+        self.ui.pushButtonChangeIndirectColour.clicked.connect(self.choose_new_indirect_colour)
+        self.ui.pushButtonChangeFont.clicked.connect(self.choose_new_font)
+
+        self.new_font = self.settings.value('Appearance/new_font')
+
+        col = self.settings.value('Appearance/directMatchColour')
+        if col is None:
+            self.direct_match_colour = default_direct_match_colour
+        else:
+            self.direct_match_colour = QColor(col)
+
+        col = self.settings.value('Appearance/indirectMatchColour')
+        if col is None:
+            self.indirect_match_colour = default_indirect_match_colour
+        else:
+            self.indirect_match_colour = QColor(col)
+
+        if self.new_font is not None:
+            self.ui.labelNormalRow.setFont(self.new_font)
+            self.ui.labelDirectMatchedRow.setFont(self.new_font)
+            self.ui.labelIndirectMatchedRow.setFont(self.new_font)
+
+        self.ui.labelNormalRow.setStyleSheet('QLabel { background-color : white}')
+
+        r,g,b,_ = self.direct_match_colour.getRgb()
+        self.ui.labelDirectMatchedRow.setStyleSheet('QLabel {{ background-color : rgb({},{},{})}}'.format(r,g,b))
+
+        r,g,b,_ = self.indirect_match_colour.getRgb()
+        self.ui.labelIndirectMatchedRow.setStyleSheet('QLabel {{ background-color : rgb({},{},{})}}'.format(r,g,b))
+
+    # TODO: These two functions are almost exactly the same, they should be rolled into one somehow
+    def choose_new_direct_colour(self):
+        new_colour = QColorDialog().getColor(initial=self.direct_match_colour,parent=self)
+        if new_colour.isValid():
+            r, g, b, _ = new_colour.getRgb()
+            self.direct_match_colour = new_colour
+            self.ui.labelDirectMatchedRow.setStyleSheet('QLabel {{ background-color : rgb({},{},{})}}'.format(r, g, b))
+
+    def choose_new_indirect_colour(self):
+        new_colour = QColorDialog().getColor(initial=self.indirect_match_colour,parent=self)
+        if new_colour.isValid():
+            r, g, b, _ = new_colour.getRgb()
+            self.indirect_match_colour = new_colour
+            self.ui.labelIndirectMatchedRow.setStyleSheet('QLabel {{ background-color : rgb({},{},{})}}'.format(r, g, b))
+
+    def choose_new_font(self):
+        font, ok = QFontDialog.getFont(self.ui.labelNormalRow.font(),self)
+        if ok:
+            self.ui.labelNormalRow.setFont(font)
+            self.ui.labelDirectMatchedRow.setFont(font)
+            self.ui.labelIndirectMatchedRow.setFont(font)
+            self.new_font = font
 
 class DiffProgressWindow(QtWidgets.QDialog):
     def __init__(self, dc_array, model_array, parent=None):
@@ -452,6 +546,8 @@ class DroppableTreeView(QTreeView):
 
     def __init__(self, *args):
         super(DroppableTreeView, self).__init__(*args)
+        self.direct_match_colour = default_direct_match_colour
+        self.indirect_match_colour = default_indirect_match_colour
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls:
@@ -476,9 +572,9 @@ class DroppableTreeView(QTreeView):
 
     def drawRow(self, painter, options, index):
         if index.sibling(index.row(), 3).data() == '1':
-            painter.fillRect(options.rect, direct_match_colour)
+            painter.fillRect(options.rect, self.direct_match_colour)
         if index.sibling(index.row(), 3).data() == '2':
-            painter.fillRect(options.rect, indirect_match_colour)
+            painter.fillRect(options.rect, self.indirect_match_colour)
         super(DroppableTreeView, self).drawRow(painter, options, index)
 
     file_dropped = pyqtSignal(str, name='file_dropped')

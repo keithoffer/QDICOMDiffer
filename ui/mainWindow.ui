@@ -154,6 +154,7 @@
     <property name="title">
      <string>View</string>
     </property>
+    <addaction name="actionAppearance"/>
     <addaction name="actionExpand_all"/>
     <addaction name="actionCollapse_all"/>
     <addaction name="actionText_diff"/>
@@ -205,6 +206,11 @@
   <action name="actionAbout">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionAppearance">
+   <property name="text">
+    <string>&amp;Appearance</string>
    </property>
   </action>
  </widget>
