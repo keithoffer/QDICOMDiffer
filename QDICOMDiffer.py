@@ -558,7 +558,8 @@ def dict_to_tree(dc, parent=None):
     https://github.com/darcymason/pydicom/blob/dev/pydicom/examples/dicomtree.py
     """
     # This regex is used to match a memory offset used in the description of pydicom sequences
-    sequence_regex = r',\sat\s[0-9A-F]{7}'  # comma, whitespace, the word 'at', whitespace, followed by seven hex digits
+    # comma, whitespace, the word 'at', whitespace, followed by seven to 12 hex digits
+    sequence_regex = r',\sat\s[0-9A-F]{7,12}'
     for data_element in dc:
         tag = str(data_element.tag)
         desc = data_element.description()
