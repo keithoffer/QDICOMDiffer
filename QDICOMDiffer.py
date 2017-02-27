@@ -139,7 +139,8 @@ class MainWindow(QtWidgets.QMainWindow):
             for i in range(2):
                 self.treeViewArray[i].direct_match_colour = self.appearance_window.direct_match_colour
                 self.treeViewArray[i].indirect_match_colour = self.appearance_window.indirect_match_colour
-                self.treeViewArray[i].setFont(self.appearance_window.new_font)
+                if self.appearance_window.new_font is not None:
+                    self.treeViewArray[i].setFont(self.appearance_window.new_font)
                 self.treeViewArray[i].repaint()
 
     def open_text_diff_window(self):
