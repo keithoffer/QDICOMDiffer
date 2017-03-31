@@ -39,7 +39,7 @@ from ui.appearance import Ui_DialogAppearance
 default_indirect_match_colour = QColor(179, 206, 236)
 default_direct_match_colour = QColor(140, 183, 225)
 GLOBAL_integer_key = 0  # key used to insure all nodes have unique id's
-version = '1.1.0'
+version = '1.1.1'
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, ):
