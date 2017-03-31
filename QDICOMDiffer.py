@@ -17,7 +17,10 @@
 """
 # Imports include comments to indicate their respective licences
 # pydicom is MIT licenced
-import dicom
+try:
+    import dicom as pydicom
+except ImportError:
+    import pydicom
 # PyQt is GPL v3 licenced
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QColor, QPainter, QFontMetrics
@@ -253,7 +256,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def load_file(self, filepath, file_number):
         try:
-            dc = dicom.read_file(filepath)
+            dc = pydicom.read_file(filepath)
             self.dc_array[file_number] = dc
             self.modelArray[file_number].removeRows(0, self.modelArray[
                 file_number].rowCount())  # Remove any rows from old loaded files
@@ -267,7 +270,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     reset_tree_diff_state(self.modelArray[1].invisibleRootItem())
                 self.diff_result = None
                 self.html_diff_result = None
-        except dicom.errors.InvalidDicomError:
+        except pydicom.errors.InvalidDicomError:
             msgBox = QMessageBox()
             msgBox.setWindowTitle("Error")
             msgBox.setText('Failed to open ' + filepath + ' (is it a valid DICOM file?)')

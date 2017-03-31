@@ -14,10 +14,12 @@ Prerequisites
 Python modules
 
 - PyQt5 (5.7 tested)
-- pydicom (0.9.9 tested)
+- pydicom (0.9.9 and 1.0.0a1 tested)
 
-Both are available through pip. 
-
+Both are available through pip, however the version of pydicom on pypi is [rather out of date](https://github.com/darcymason/pydicom/issues/240), so moving to the unreleased 1.0.0 branch solves atleast one crash on a file I found in the wild. You can install the 1.0.0 branch of pydicom from github: 
+```
+pip install https://github.com/darcymason/pydicom/archive/master.zip 
+```
 Usage
 -----
 You can load images into the program in a couple of ways:
