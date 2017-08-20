@@ -3,7 +3,7 @@ QDICOMDiffer 1.1.1
 
 A small cross-platform program to show DICOM metadata in a tree view, aswell as visually diff the metadata of two different DICOM files. I've only tested under Linux and Windows, but macOS should work aswell. If you don't want to run the python script itself, Windows [binary releases](https://github.com/keithoffer/QDICOMDiffer/releases) are available through github.
 
-![Screenshot comparing two of the internationalized character set test DICOM images](Screenshots/main_screenshot.png?raw=true)
+![Screenshot comparing two of the internationalized character set test DICOM images](Screenshots/main_screenshot.gif?raw=true)
 
 Screenshot comparing two of the [internationalized character set test DICOM images](http://www.dclunie.com/images/charset/ ). 
 
